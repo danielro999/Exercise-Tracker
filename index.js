@@ -3,36 +3,47 @@ const app = express();
 const cors = require('cors');
 require('dotenv').config();
 var bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 
 app.use(cors());
 app.use(express.static('public'));
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/views/index.html')
 });
+
 app.use(bodyParser.urlencoded({ extended: false }));
 
 const listener = app.listen(process.env.PORT || 3000, () => {
   console.log('Your app is listening on port ' + listener.address().port)
 })
+              // mongoose
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+              //  schema
+const Schema = mongoose.Schema;
+              // nueva instancia objeto schema
+const userSchema = new Schema({
+   username: { type: String, required: true },
+});
+
+const User = mongoose.model("User", userSchema);
 
 
-
-
-const arrayUsers = new Array();
 // :You can POST to /api/users with form data username to create a new user.
 // :The returned response from POST /api/users with form data username will be an object with username and _id properties.
               //      {"username":"pedro","_id":"63292c10c8e97a09397759c6"}
-count = 0;
+count = "0";
 app.post('/api/users', function(req, res) {
   const username = req.body.username;
-  count++;
-   var user = {
-    username: username,
-    _id: count,
-   };
-  arrayUsers.push(user);
-  res.json({username:username,_id: user._id});
-})
+  
+  var user = new User({
+    username:username
+  });
+  
+  user.save(function(err, data) {
+    if (err) {return console.error(err);}
+        res.json(data);
+  })  
+});
 
 // :You can make a GET request to /api/users to get a list of all users.
 // :The GET request to /api/users returns an array.
@@ -45,9 +56,16 @@ app.post('/api/users', function(req, res) {
                   // {"_id":"63292b3ec8e97a09397759c0","username":"DANIEL","__v":0},
                   // {"_id":"63292c10c8e97a09397759c6","username":"pedro","__v":0},
                   // {"_id":"63292c4ec8e97a09397759c8","username":"pedro","__v":0} ]
+
 app.get('/api/users', function (req, res) {
-  res.send(arrayUsers)
-})
+    User.find({}, function (err, users) {
+      if (err) {
+        res.send(err);
+        nex();
+      }
+      res.json(users);
+    });
+});
 
 
 // :You can POST to /api/users/:_id/exercises with form data description, duration, and optionally date. If no date is supplied, the current date will be used.        
