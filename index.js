@@ -116,67 +116,25 @@ app.post('/api/users/:_id/exercises', function (req, res) {
   }) 
 })
 
-// :The date property of any object in the log array that is returned from GET /api/users/:_id/logs should be a string. Use the dateString format of the Date API.
-              //    {"_id":"63292384c8e97a09397759bd","username":"DANIEL","count":2,"log":[{"description":"pitos","duration":2,        "date":"Fri Dec 11 2020"      },{"description":"zaraza","duration":11,"date":"Thu Dec 02 1999"}]}
 
-// :You can make a GET request to /api/users/:_id/logs to retrieve a full exercise log of any user.
-                  //   https://exercise-tracker.freecodecamp.rocks/api/users/63292384c8e97a09397759bd/logs
-                 
-// :A request to a user's log GET /api/users/:_id/logs returns a user object with a count property representing the number of exercises that belong to that user.
-               //   {"_id":"63292384c8e97a09397759bd","username":"DANIEL","count":1,"log":[{"description":"zaraza","duration":11,"date":"Thu Dec 02 1999"}]}
-
-// :A GET request to /api/users/:_id/logs will return the user object with a log array of all the exercises added.
-              //    {"_id":"63292384c8e97a09397759bd","username":"DANIEL","count":2,"log":[{"description":"pitos","duration":2,"date":"Fri Dec 11 2020"},{"description":"zaraza","duration":11,"date":"Thu Dec 02 1999"}]}
-// :Each item in the log array that is returned from GET /api/users/:_id/logs is an object that should have a description, duration, and date properties.
-              //    {"_id":"63292384c8e97a09397759bd","username":"DANIEL","count":2,"log":[{"description":"pitos","duration":2,"date":"Fri Dec 11 2020"},{"description":"zaraza","duration":11,"date":"Thu Dec 02 1999"}]}
-
-// :The description property of any object in the log array that is returned from GET /api/users/:_id/logs should be a string.
-              //    {"_id":"63292384c8e97a09397759bd","username":"DANIEL","count":2,"log":[{"description":      "pitos"     ,"duration":2,"date":"Fri Dec 11 2020"},{"description":         "zaraza"           ,"duration":11,"date":"Thu Dec 02 1999"}]}
-
-// :The duration property of any object in the log array that is returned from GET /api/users/:_id/logs should be a number.
-              //    {"_id":"63292384c8e97a09397759bd","username":"DANIEL","count":2,"log":[{"description":"pitos","duration":     2     ,"date":"Fri Dec 11 2020"},{"description":"zaraza","duration":     11     ,"date":"Thu Dec 02 1999"}]}
-
-//exercise-tracker.danielro999.repl.co/api/users/632bc0a641358000f192bbe4/logs?from=1990-01-01&to=2022-09-09&limit=2
 app.get('/api/users/:_id/logs',(req, res)=>
 {  
-   const id = req.params._id;
+   const _id = req.params._id;
   const { from, to, limit } = req.query;
 
   const dateFrom = new Date(from);
   const dateTo = new Date(to);
-  console.log(dateFrom, dateTo,parseInt(limit), id);
+  // console.log(dateFrom,         
+  // dateTo,parseInt(limit), _id);
 
- User.findById(id)
-      .select({ log: 1})
-      .limit(parseInt(limit))
-      .exec((err, data) => {
+ User.findById({_id}, (err,data)=>{
       if (err)return console.log(err);
-        console.log(data.log);
-
+        console.log(data);
+        res.json(data);
         
        })
-           
 
-  // User.findById(id,(err, data) =>  
-  // {
-  //   if (err) return console.log(err);
-  //   res.json(data);
-  //   // console.log(req.params);
-  //   // console.log(data)
-  // }) 
+    
+
 });
 
-// :You can add from, to and limit parameters to a GET /api/users/:_id/logs request to retrieve part of the log of any user. from and to are dates in yyyy-mm-dd format. limit is an integer of how many logs to send back.
-//                  https://exercise-tracker.freecodecamp.rocks/api/users/63292384c8e97a09397759bd/logs?from=1920-01-01&to2022-01-01&limit=2
-//                   {"_id":"63292384c8e97a09397759bd","username":"DANIEL","from":"Thu Jan 01 1920","count":2,"log":[{"description":"pitos","duration":2,"date":"Fri Dec 11 2020"},{"description":"zaraza","duration":11,"date":"Thu Dec 02 1999"}]}
-
-///api/users/:_id/logs?[from][&to][&limit]
-// app.get('/api/users/:_id/logs/', function (req, res) {   
-//   // const from= req.query.from;
-//   // const to= req.query.to; 
-//   // const limit= req.query.limit;
-  
-
-// //User.find
-  
-// })
